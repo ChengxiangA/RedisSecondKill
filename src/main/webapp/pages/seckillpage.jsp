@@ -11,9 +11,9 @@
     <title>秒杀</title>
 </head>
 <body>
-    <form action="/secKill/seckill" method="post">
-        <input type="text" name="uid" placeholder="输入用户id"/> <br>
-        <input type="text" name="proid" placeholder="输入秒杀产品id" /> <br>
+    <h1>限时开启，秒杀IPHONE13</h1>
+    <h1>走过路过不要错过~</h1>
+    <form action="/secKill/seckill?proid=1" method="post">
         <input type="submit" value="开始秒杀" />
     </form>
 </body>
