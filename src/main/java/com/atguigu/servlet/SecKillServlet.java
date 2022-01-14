@@ -13,22 +13,18 @@ public class SecKillServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = "" + new Random().nextInt(10000);
-        String productId = req.getParameter("proid");
-        //1.判断前端输入的产品名是否为空
-        if("".equals(productId)) {
-            System.out.println("请输入产品id！");
-        }
         //2.连接redis数据库
         Jedis jedis = new Jedis("127.0.0.1", 6379);
-        //3.判断秒杀是否开始即秒杀产品是否在数据库中
-        if(jedis.exists("product" + productId)) {
+        //3.判断是否已经开启秒杀
+        if(jedis.exists("kcKey")) {
             //3.1 判断秒杀产品是否还有库存(设置库存为10)
-            if(jedis.scard("product" + productId) < 11) {
+            if(Integer.parseInt(jedis.get("kcKey")) > 0) {
                 //3.1.1 判断该用户是否已经秒杀此商品
-                if(jedis.sismember("product" + productId,userId)) {
+                if(jedis.sismember("userList",userId)) {
                     System.out.println("您已经抢到了哦，换个商品继续试试！");
                 } else {
-                    jedis.sadd("product" + productId,userId);
+                    jedis.decr("kcKey");
+                    jedis.sadd("userList",userId);
                     System.out.println("秒杀成功！");
                 }
             } else {
@@ -37,5 +33,6 @@ public class SecKillServlet extends HttpServlet {
         } else {
             System.out.println("商品未开启秒杀，请换个商品试试！");
         }
+        resp.sendRedirect("pages/seckillpage.jsp");
     }
 }

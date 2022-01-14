@@ -12,9 +12,8 @@ public class SecKill {
     @Test
     public  void initRedisDb() {
         Jedis jedis = new Jedis("127.0.0.1", 6379);
-        jedis.sadd("product1","nobody");
-        jedis.sadd("product2","nobody");
-        jedis.sadd("product3","nobody");
+        jedis.sadd("userList","nobody");
+        jedis.set("kcKey","10");
     }
 
     /**
@@ -30,25 +29,21 @@ public class SecKill {
      * 查看秒杀名单
      */
     @Test
-    public void checkKillList() {
+    public void checkUserList() {
         Jedis jedis = new Jedis("127.0.0.1", 6379);
-        Set<String> product1 = jedis.smembers("product1");
-        Set<String> product2 = jedis.smembers("product2");
-        Set<String> product3 = jedis.smembers("product3");
-        System.out.println("产品1秒杀名单:");
+        Set<String> product1 = jedis.smembers("userList");
         for(String user: product1) {
             if(!"nobody".equals(user))
                 System.out.println(user);
         }
-        System.out.println("产品2秒杀名单:");
-        for(String user: product2) {
-            if(!"nobody".equals(user))
-                System.out.println(user);
-        }
-        System.out.println("产品3秒杀名单:");
-        for(String user: product3) {
-            if(!"nobody".equals(user))
-                System.out.println(user);
-        }
+    }
+
+    /**
+     * 查看库存量
+     */
+    @Test
+    public void checkKc() {
+        Jedis jedis = new Jedis("127.0.0.1", 6379);
+        System.out.println(jedis.get("kcKey"));
     }
 }
